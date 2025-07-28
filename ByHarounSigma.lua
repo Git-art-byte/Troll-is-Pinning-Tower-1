@@ -4,6 +4,8 @@ local Workspace = game:GetService("Workspace")
 
 local looping = false
 local loopThread = nil
+local auraLooping = false
+local auraThread = nil
 
 local function split(str)
 	local result = {}
@@ -171,7 +173,7 @@ LocalPlayer.Chatted:Connect(function(msg)
 			warn("🔁 Looping slap started.")
 		end
 
-	elseif command == "!stoploop" then
+	elseif command == "!unloopslap" then
 		if looping then
 			looping = false
 			if loopThread then
@@ -192,37 +194,56 @@ LocalPlayer.Chatted:Connect(function(msg)
 			return
 		end
 
-		local char = LocalPlayer.Character
-		if not char then
-			warn("Character not found!")
+		if auraLooping then
+			warn("Slapaura already active! Use !stopaura to stop.")
 			return
 		end
 
-		local hrp = char:FindFirstChild("HumanoidRootPart")
-		if not hrp then
-			warn("HumanoidRootPart not found!")
-			return
-		end
+		auraLooping = true
+		auraThread = task.spawn(function()
+			while auraLooping do
+				local char = LocalPlayer.Character
+				if not char then
+					auraLooping = false
+					break
+				end
+				local hrp = char:FindFirstChild("HumanoidRootPart")
+				if not hrp then
+					auraLooping = false
+					break
+				end
 
-		local playersInRadius = {}
-
-		for _, player in ipairs(Players:GetPlayers()) do
-			if player == LocalPlayer then continue end
-			local pchar = player.Character
-			if not pchar then continue end
-			local phrp = pchar:FindFirstChild("HumanoidRootPart")
-			if not phrp then continue end
-
-			if (hrp.Position - phrp.Position).Magnitude <= radius then
-				table.insert(playersInRadius, player)
+				for _, player in ipairs(Players:GetPlayers()) do
+					if player ~= LocalPlayer then
+						local pchar = player.Character
+						if pchar then
+							local phrp = pchar:FindFirstChild("HumanoidRootPart")
+							if phrp then
+								local dist = (hrp.Position - phrp.Position).Magnitude
+								if dist <= radius then
+									slap(player, power)
+								end
+							end
+						end
+					end
+				end
+				task.wait(0.3) -- check every 0.3 seconds
 			end
-		end
+		end)
 
-		for _, p in ipairs(playersInRadius) do
-			slap(p, power)
-		end
+		warn("🌀 Slapaura started with radius "..radius.." and power "..power.."!")
 
-		warn("🌀 Slapaura slapped "..#playersInRadius.." players in radius "..radius.." with power "..power.."!")
+	elseif command == "!unslapaura" then
+		if auraLooping then
+			auraLooping = false
+			if auraThread then
+				task.cancel(auraThread)
+				auraThread = nil
+			end
+			warn("⛔ Slapaura stopped.")
+		else
+			warn("Slapaura is not active.")
+		end
 
 	elseif command == "!end" then
 		local char = LocalPlayer.Character
