@@ -246,7 +246,7 @@ LocalPlayer.Chatted:Connect(function(msg)
 			{ name = "PinkSlap", pos = Vector3.new(-448, 4, -1817) },
 			{ name = "RedSlap", pos = Vector3.new(-442, 4, -1817) },
 			{ name = "GreenSlap", pos = Vector3.new(-436, 4, -1816) },
-			{ name = "DefaultSlap", pos = Vector3.new(-431, 4, -1821) },
+			{ name = "Default", pos = Vector3.new(-431, 4, -1821) },
 			{ name = "OpSlap", pos = Vector3.new(-400, 4, -1816), isSecret = true }
 		}
 
