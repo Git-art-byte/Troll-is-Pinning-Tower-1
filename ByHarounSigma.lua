@@ -177,16 +177,12 @@ LocalPlayer.Chatted:Connect(function(msg)
 		end
 
 	elseif command == "!unloopslap" then
-		if looping then
-			looping = false
-			if loopThread then
-				task.cancel(loopThread)
-				loopThread = nil
-			end
-			warn("⛔ Looping slap stopped.")
-		else
-			warn("Loop is not running.")
+		looping = false
+		if loopThread then
+			task.cancel(loopThread)
+			loopThread = nil
 		end
+		warn("⛔ Looping slap stopped.")
 
 	elseif command == "!slapaura" then
 		local radius = tonumber(parts[2]) or 8
@@ -218,67 +214,70 @@ LocalPlayer.Chatted:Connect(function(msg)
 						end
 					end
 				end
-				task.wait(0.00000000001)
+				task.wait(0.1)
 			end
 		end)
 
 		warn("🌀 Slapaura started with radius "..radius.." and power "..power.."!")
 
 	elseif command == "!unslapaura" then
-		if auraLooping then
-			auraLooping = false
-			if auraThread then
-				task.cancel(auraThread)
-				auraThread = nil
-			end
-			warn("⛔ Slapaura stopped.")
-		else
-			warn("Slapaura is not active.")
+		auraLooping = false
+		if auraThread then
+			task.cancel(auraThread)
+			auraThread = nil
 		end
+		warn("⛔ Slapaura stopped.")
 
 	elseif command == "!end" then
-		local char = LocalPlayer.Character
-		if char and char:FindFirstChild("HumanoidRootPart") then
-			char.HumanoidRootPart.CFrame = CFrame.new(-219, 530, -1844)
-			warn("📍 Teleported to !end location.")
+		local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+		if hrp then
+			hrp.CFrame = CFrame.new(-219, 530, -1844)
 		end
 
 	elseif command == "!tptroll" then
-		local char = LocalPlayer.Character
-		if char and char:FindFirstChild("HumanoidRootPart") then
-			char.HumanoidRootPart.CFrame = CFrame.new(-385, 154, -1871)
-			warn("😈 Teleported to !tptroll location.")
+		local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+		if hrp then
+			hrp.CFrame = CFrame.new(-385, 154, -1871)
 		end
 
 	elseif command == "!tools" then
-		local groupPath = workspace:FindFirstChild("MainGame") and workspace.MainGame:FindFirstChild("GroupDoor") and workspace.MainGame.GroupDoor:FindFirstChild("Slaps V1")
-		local secretPath = workspace:FindFirstChild("MainGame") and workspace.MainGame:FindFirstChild("SecretDoor") and workspace.MainGame.SecretDoor:FindFirstChild("OpSlap")
+		local toolPositions = {
+			{ name = "BlackSlap", pos = Vector3.new(-456, 4, -1818) },
+			{ name = "PinkSlap", pos = Vector3.new(-448, 4, -1817) },
+			{ name = "RedSlap", pos = Vector3.new(-442, 4, -1817) },
+			{ name = "GreenSlap", pos = Vector3.new(-436, 4, -1816) },
+			{ name = "DefaultSlap", pos = Vector3.new(-431, 4, -1821) },
+			{ name = "OpSlap", pos = Vector3.new(-400, 4, -1816), isSecret = true }
+		}
 
-		local toolNames = { "BlackSlap", "PinkSlap", "RedSlap", "GreenSlap", "Slap" }
+		for _, toolData in ipairs(toolPositions) do
+			local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+			if hrp then
+				hrp.CFrame = CFrame.new(toolData.pos + Vector3.new(0, 3, 0))
+				task.wait(0.15)
 
-		if groupPath then
-			for _, name in ipairs(toolNames) do
-				local tool = groupPath:FindFirstChild(name)
+				local tool
+				if toolData.isSecret then
+					tool = workspace.MainGame and workspace.MainGame.SecretDoor and workspace.MainGame.SecretDoor:FindFirstChild(toolData.name)
+				else
+					local group = workspace.MainGame and workspace.MainGame.GroupDoor and workspace.MainGame.GroupDoor["Slaps V1"]
+					tool = group and group:FindFirstChild(toolData.name)
+				end
+
 				if tool and tool:FindFirstChild("ProximityPrompPart") then
-					local prompt = tool.ProximityPrompPart:FindFirstChildOfClass("ProximityPrompt")
+					local prompt
+					if toolData.isSecret then
+						prompt = tool.ProximityPrompPart:FindFirstChild("???")
+					else
+						prompt = tool.ProximityPrompPart:FindFirstChildOfClass("ProximityPrompt")
+					end
 					if prompt then
 						fireproximityprompt(prompt)
 					end
 				end
 			end
-		else
-			warn("❌ Group tool path not found!")
+			task.wait(0.2)
 		end
-
-		if secretPath and secretPath:FindFirstChild("ProximityPrompPart") then
-			local secretPrompt = secretPath.ProximityPrompPart:FindFirstChild("???")
-			if secretPrompt and secretPrompt:IsA("ProximityPrompt") then
-				fireproximityprompt(secretPrompt)
-			end
-		else
-			warn("❌ Secret OP Slap path not found!")
-		end
-
-		warn("🛠️ All proximity prompts fired: Tools + OP Slap.")
+		warn("✅ Tools collected.")
 	end
 end)
