@@ -104,12 +104,12 @@ LocalPlayer.Chatted:Connect(function(msg)
 	local parts = split(msg)
 	local command = parts[1] and parts[1]:lower()
 
-	if command == "!slap" then
+	if command == "?slap" then
 		local targetInput = parts[2]
 		local powerInput = tonumber(parts[3]) or 45
 
 		if not targetInput then
-			warn("Usage: !slap <name/random/all> [power]")
+			warn("Usage: ?slap <name/random/all> [power]")
 			return
 		end
 
@@ -126,7 +126,7 @@ LocalPlayer.Chatted:Connect(function(msg)
 			end
 		end
 
-	elseif command == "!fun" then
+	elseif command == "?fun" then
 		if equipSlap() then
 			task.wait(0.1)
 			setSlapStats(45, 0.9, math.huge)
@@ -134,7 +134,7 @@ LocalPlayer.Chatted:Connect(function(msg)
 			warn("⚡ FUN mode activated: Custom vector (0, -9e9, 0)")
 		end
 
-	elseif command == "!unfun" then
+	elseif command == "?unfun" then
 		if equipSlap() then
 			task.wait(0.1)
 			setSlapStats(45, 10, 0.45)
@@ -142,13 +142,13 @@ LocalPlayer.Chatted:Connect(function(msg)
 			warn("🔄 Stats reset to normal.")
 		end
 
-	elseif command == "!loopslap" then
+	elseif command == "?loopslap" then
 		local targetInput = parts[2]
 		local delay = tonumber(parts[3]) or 0.5
 		local power = tonumber(parts[4]) or 45
 
 		if not targetInput then
-			warn("Usage: !loopslap <name/random/all> [delay] [power]")
+			warn("Usage: ?loopslap <name/random/all> [delay] [power]")
 			return
 		end
 
@@ -176,7 +176,7 @@ LocalPlayer.Chatted:Connect(function(msg)
 			warn("🔁 Looping slap started.")
 		end
 
-	elseif command == "!unloopslap" then
+	elseif command == "?unloopslap" then
 		looping = false
 		if loopThread then
 			task.cancel(loopThread)
@@ -184,7 +184,7 @@ LocalPlayer.Chatted:Connect(function(msg)
 		end
 		warn("⛔ Looping slap stopped.")
 
-	elseif command == "!slapaura" then
+	elseif command == "?slapaura" then
 		local radius = tonumber(parts[2]) or 8
 		local power = tonumber(parts[3]) or 45
 
@@ -220,7 +220,7 @@ LocalPlayer.Chatted:Connect(function(msg)
 
 		warn("🌀 Slapaura started with radius "..radius.." and power "..power.."!")
 
-	elseif command == "!unslapaura" then
+	elseif command == "?unslapaura" then
 		auraLooping = false
 		if auraThread then
 			task.cancel(auraThread)
@@ -228,19 +228,19 @@ LocalPlayer.Chatted:Connect(function(msg)
 		end
 		warn("⛔ Slapaura stopped.")
 
-	elseif command == "!end" then
+	elseif command == "?end" then
 		local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 		if hrp then
 			hrp.CFrame = CFrame.new(-219, 530, -1844)
 		end
 
-	elseif command == "!tptroll" then
+	elseif command == "?tptroll" then
 		local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 		if hrp then
 			hrp.CFrame = CFrame.new(-385, 154, -1871)
 		end
 
-	elseif command == "!tools" then
+	elseif command == "?tools" then
 		local toolPositions = {
 			{ name = "BlackSlap", pos = Vector3.new(-456, 4, -1818) },
 			{ name = "PinkSlap", pos = Vector3.new(-448, 4, -1817) },
