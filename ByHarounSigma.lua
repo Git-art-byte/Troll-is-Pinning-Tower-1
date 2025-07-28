@@ -46,12 +46,12 @@ end
 local function equipSlap()
 	local bp = LocalPlayer:FindFirstChild("Backpack")
 	if not bp then return false end
-	local tool = bp:FindFirstChild("SecretSlap")
+	local tool = bp:FindFirstChild("BlackSlap")
 	if tool then
 		tool.Parent = LocalPlayer.Character
 		return true
 	end
-	warn("SecretSlap not found in backpack.")
+	warn("BlackSlap not found in backpack.")
 	return false
 end
 
@@ -69,7 +69,7 @@ local function slap(targetPlayer, power)
 		slapDirection
 	}
 
-	local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("SecretSlap")
+	local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("BlackSlap")
 	if tool and tool:FindFirstChild("Event") then
 		tool.Event:FireServer(unpack(args))
 	end
