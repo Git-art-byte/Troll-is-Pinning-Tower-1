@@ -79,9 +79,9 @@ local function setSlapStats(power, speed, flightSpeed)
 	local char = LocalPlayer.Character
 	if not char then return end
 
-	local tool = char:FindFirstChild("SecretSlap")
+	local tool = char:FindFirstChild("Blacklap")
 	if not tool then
-		warn("SecretSlap is not equipped!")
+		warn("BlackSlap is not equipped!")
 		return
 	end
 
