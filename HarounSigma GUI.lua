@@ -1,32 +1,53 @@
--- Enhanced Tablet GUI with all requested features
+--[[
+COMPLETE SECRET SLAP TABLET GUI v2.3
+Features:
+- Fixed customization GUI spacing
+- View/UnView spectate system
+- /panel chat command
+- Tablet-optimized UI
+- All previous functionality
+]]
+
+-- Services
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local StarterGui = game:GetService("StarterGui")
+local Workspace = game:GetService("Workspace")
 
--- GUI SETUP (Tablet Optimized)
+-- State Variables
+local looping = false
+local loopConnection = nil
+local currentAction = nil
+local chatHook = nil
+local spectating = false
+local originalCamera = nil
+local currentSpectateTarget = nil
+
+-- Main GUI Setup
 local gui = Instance.new("ScreenGui", game.CoreGui)
 gui.Name = "SecretSlapGUI_Tablet"
 gui.Enabled = true
 
--- Main Frame (better organized for tablets)
+-- Main Frame
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 500, 0, 400)  -- Larger size
-frame.Position = UDim2.new(0.5, -250, 0.5, -200)
+frame.Size = UDim2.new(0, 500, 0, 450)
+frame.Position = UDim2.new(0.5, -250, 0.5, -225)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
--- Title with close button
+-- Title Bar
 local titleBar = Instance.new("Frame", frame)
 titleBar.Size = UDim2.new(1, 0, 0, 40)
 titleBar.BackgroundTransparency = 1
 
 local title = Instance.new("TextLabel", titleBar)
 title.Size = UDim2.new(0.8, 0, 1, 0)
-title.Text = "Server Panel"
+title.Text = "Server GUI"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.BackgroundTransparency = 1
 title.TextScaled = true
@@ -41,7 +62,7 @@ closeBtn.BackgroundTransparency = 1
 closeBtn.TextScaled = true
 closeBtn.Font = Enum.Font.GothamBold
 
--- Input Box (larger)
+-- Input Box
 local box = Instance.new("TextBox", frame)
 box.PlaceholderText = "Enter name, 'all', or 'random'"
 box.Size = UDim2.new(1, -40, 0, 50)
@@ -52,29 +73,25 @@ box.TextScaled = true
 box.Font = Enum.Font.Gotham
 Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
 
--- Button Creation (better organized grid)
+-- Button Grid
 local buttons = {}
 local buttonNames = {
     "Slap", "Kill", "Goto", 
-    "LoopSlap", "StopLoop", "End", 
-    "Tool", "TpTroll"
+    "LoopSlap", "UnLoopSlap", "End", 
+    "OpSlap", "TpTroll", "View", "UnView"
 }
 local positions = {
-    UDim2.new(0, 20, 0, 110),    -- Row 1
-    UDim2.new(0, 180, 0, 110),
-    UDim2.new(0, 340, 0, 110),
-    UDim2.new(0, 20, 0, 180),    -- Row 2
-    UDim2.new(0, 180, 0, 180),
-    UDim2.new(0, 340, 0, 180),
-    UDim2.new(0, 20, 0, 250),    -- Row 3
-    UDim2.new(0, 180, 0, 250)
+    UDim2.new(0, 20, 0, 110), UDim2.new(0, 180, 0, 110), UDim2.new(0, 340, 0, 110),
+    UDim2.new(0, 20, 0, 180), UDim2.new(0, 180, 0, 180), UDim2.new(0, 340, 0, 180),
+    UDim2.new(0, 20, 0, 250), UDim2.new(0, 180, 0, 250),
+    UDim2.new(0, 340, 0, 250), UDim2.new(0, 340, 0, 320)
 }
 
 for i, name in ipairs(buttonNames) do
     local btn = Instance.new("TextButton", frame)
     btn.Name = name
     btn.Text = name
-    btn.Size = UDim2.new(0, 150, 0, 60)  -- Larger buttons
+    btn.Size = UDim2.new(0, 150, 0, 60)
     btn.Position = positions[i]
     btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     btn.TextColor3 = Color3.new(1, 1, 1)
@@ -84,17 +101,17 @@ for i, name in ipairs(buttonNames) do
     buttons[name] = btn
 end
 
--- CUSTOMIZATION GUI (Improved layout)
+-- FIXED CUSTOMIZATION GUI (Properly Spaced)
 local customGui = Instance.new("Frame", gui)
-customGui.Size = UDim2.new(0, 500, 0, 300)
-customGui.Position = UDim2.new(0.5, -250, 0.5, -150)
+customGui.Size = UDim2.new(0, 500, 0, 400)
+customGui.Position = UDim2.new(0.5, -250, 0.5, -200)
 customGui.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 customGui.Visible = false
 customGui.Active = true
 customGui.Draggable = true
 Instance.new("UICorner", customGui).CornerRadius = UDim.new(0, 12)
 
--- Custom GUI Title with close button
+-- Custom Title Bar
 local customTitleBar = Instance.new("Frame", customGui)
 customTitleBar.Size = UDim2.new(1, 0, 0, 40)
 customTitleBar.BackgroundTransparency = 1
@@ -116,6 +133,7 @@ customCloseBtn.BackgroundTransparency = 1
 customCloseBtn.TextScaled = true
 customCloseBtn.Font = Enum.Font.GothamBold
 
+-- Input Controls
 local inputLabel = Instance.new("TextLabel", customGui)
 inputLabel.Size = UDim2.new(1, -40, 0, 40)
 inputLabel.Position = UDim2.new(0, 20, 0, 50)
@@ -134,9 +152,10 @@ inputBox.Font = Enum.Font.Gotham
 Instance.new("UICorner", inputBox).CornerRadius = UDim.new(0, 8)
 inputBox.ClearTextOnFocus = false
 
+-- Delay Controls (Properly Spaced)
 local delayLabel = Instance.new("TextLabel", customGui)
 delayLabel.Size = UDim2.new(1, -40, 0, 40)
-delayLabel.Position = UDim2.new(0, 20, 0, 170)
+delayLabel.Position = UDim2.new(0, 20, 0, 180)
 delayLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 delayLabel.BackgroundTransparency = 1
 delayLabel.TextScaled = true
@@ -145,7 +164,7 @@ delayLabel.Visible = false
 
 local delayBox = Instance.new("TextBox", customGui)
 delayBox.Size = UDim2.new(1, -40, 0, 60)
-delayBox.Position = UDim2.new(0, 20, 0, 220)
+delayBox.Position = UDim2.new(0, 20, 0, 230)
 delayBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 delayBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 delayBox.TextScaled = true
@@ -154,21 +173,16 @@ Instance.new("UICorner", delayBox).CornerRadius = UDim.new(0, 8)
 delayBox.ClearTextOnFocus = false
 delayBox.Visible = false
 
+-- Confirm Button (Properly Spaced)
 local confirmBtn = Instance.new("TextButton", customGui)
 confirmBtn.Size = UDim2.new(0.4, 0, 0, 70)
-confirmBtn.Position = UDim2.new(0.3, 0, 1, -80)
+confirmBtn.Position = UDim2.new(0.3, 0, 1, -90)
 confirmBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 confirmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 confirmBtn.Text = "CONFIRM"
 confirmBtn.TextScaled = true
 confirmBtn.Font = Enum.Font.GothamBold
 Instance.new("UICorner", confirmBtn).CornerRadius = UDim.new(0, 8)
-
--- Variables
-local looping = false
-local loopConnection = nil
-local currentAction = nil
-local chatHook = nil
 
 -- Helper Functions
 local function getTargets(input)
@@ -235,7 +249,6 @@ local function slapTarget(target, force)
         Vector3.new(force, 0, force)
     }
 
-    -- Only require tool for slap/kill actions
     if currentAction == "Slap" or currentAction == "Kill" or currentAction == "LoopSlap" then
         local tool = equipTool()
         if not tool then 
@@ -247,7 +260,6 @@ local function slapTarget(target, force)
             tool:WaitForChild("Event"):FireServer(unpack(args))
         end)
     else
-        -- For other actions, just fire the event directly if possible
         pcall(function()
             ReplicatedStorage:FindFirstChild("SlapEvent"):FireServer(unpack(args))
         end)
@@ -289,7 +301,43 @@ local function toggleGUI()
     gui.Enabled = not gui.Enabled
 end
 
--- Chat command handler
+-- Spectate Functions
+local function startSpectating(target)
+    if not target or not target.Character then return end
+    
+    originalCamera = workspace.CurrentCamera.CameraType
+    workspace.CurrentCamera.CameraSubject = target.Character:FindFirstChildOfClass("Humanoid")
+    workspace.CurrentCamera.CameraType = Enum.CameraType.Track
+    currentSpectateTarget = target
+    spectating = true
+    
+    StarterGui:SetCore("ResetButtonCallback", false)
+    buttons["View"].Text = "VIEWING"
+    buttons["View"].BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+end
+
+local function stopSpectating()
+    if not spectating then return end
+    
+    workspace.CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+    workspace.CurrentCamera.CameraType = originalCamera or Enum.CameraType.Custom
+    currentSpectateTarget = nil
+    spectating = false
+    
+    StarterGui:SetCore("ResetButtonCallback", true)
+    buttons["View"].Text = "View"
+    buttons["View"].BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+end
+
+-- Character Handling
+local function onCharacterAdded(character)
+    if spectating and currentSpectateTarget and currentSpectateTarget.Character == character then
+        task.wait(1)
+        startSpectating(currentSpectateTarget)
+    end
+end
+
+-- Chat Command
 local function onChatMessage(message, recipient)
     if message:lower() == "/panel" then
         toggleGUI()
@@ -297,7 +345,7 @@ local function onChatMessage(message, recipient)
     end
 end
 
--- BUTTON FUNCTIONS
+-- Button Functions
 buttons["Slap"].MouseButton1Click:Connect(function()
     if #getTargets(box.Text) == 0 then
         warn("No valid targets found")
@@ -334,7 +382,7 @@ buttons["LoopSlap"].MouseButton1Click:Connect(function()
     showCustomHideMain("LoopSlap")
 end)
 
-buttons["StopLoop"].MouseButton1Click:Connect(function()
+buttons["UnLoopSlap"].MouseButton1Click:Connect(function()
     if looping then
         looping = false
         buttons["LoopSlap"].Text = "LoopSlap"
@@ -354,13 +402,16 @@ buttons["End"].MouseButton1Click:Connect(function()
             loopConnection = nil
         end
     end
+    
+    stopSpectating()
+    
     local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if myHRP then
         myHRP.CFrame = CFrame.new(-220, 530, -1844)
     end
 end)
 
-buttons["Tool"].MouseButton1Click:Connect(function()
+buttons["OpSlap"].MouseButton1Click:Connect(function()
     local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if myHRP then
         myHRP.CFrame = CFrame.new(-400, 4, -1815)
@@ -388,7 +439,20 @@ buttons["TpTroll"].MouseButton1Click:Connect(function()
     end
 end)
 
--- Close buttons
+buttons["View"].MouseButton1Click:Connect(function()
+    local targets = getTargets(box.Text)
+    if #targets == 0 then
+        warn("No valid targets found")
+        return
+    end
+    startSpectating(targets[1])
+end)
+
+buttons["UnView"].MouseButton1Click:Connect(function()
+    stopSpectating()
+end)
+
+-- Close Buttons
 closeBtn.MouseButton1Click:Connect(function()
     gui.Enabled = false
 end)
@@ -397,7 +461,7 @@ customCloseBtn.MouseButton1Click:Connect(function()
     showMainHideCustom()
 end)
 
--- Confirm Button Logic
+-- Confirm Button
 confirmBtn.MouseButton1Click:Connect(function()
     local targets = getTargets(box.Text)
     if #targets == 0 then
@@ -434,10 +498,11 @@ confirmBtn.MouseButton1Click:Connect(function()
     showMainHideCustom()
 end)
 
--- Chat command setup
+-- Initialize
+LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+
 if not chatHook and Players.LocalPlayer then
     chatHook = Players.LocalPlayer.Chatted:Connect(onChatMessage)
 end
 
--- Initialize GUI
 showMainHideCustom()
