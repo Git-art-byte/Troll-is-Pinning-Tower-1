@@ -26,7 +26,7 @@ titleBar.BackgroundTransparency = 1
 
 local title = Instance.new("TextLabel", titleBar)
 title.Size = UDim2.new(0.8, 0, 1, 0)
-title.Text = "🔥 SecretSlap Tablet GUI"
+title.Text = "Server Panel"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.BackgroundTransparency = 1
 title.TextScaled = true
@@ -56,8 +56,8 @@ Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
 local buttons = {}
 local buttonNames = {
     "Slap", "Kill", "Goto", 
-    "LoopSlap", "UnLoopSlap", "End", 
-    "???", "TpTroll"
+    "LoopSlap", "StopLoop", "End", 
+    "Tool", "TpTroll"
 }
 local positions = {
     UDim2.new(0, 20, 0, 110),    -- Row 1
@@ -334,7 +334,7 @@ buttons["LoopSlap"].MouseButton1Click:Connect(function()
     showCustomHideMain("LoopSlap")
 end)
 
-buttons["UnLoopSlap"].MouseButton1Click:Connect(function()
+buttons["StopLoop"].MouseButton1Click:Connect(function()
     if looping then
         looping = false
         buttons["LoopSlap"].Text = "LoopSlap"
@@ -360,7 +360,7 @@ buttons["End"].MouseButton1Click:Connect(function()
     end
 end)
 
-buttons["???"].MouseButton1Click:Connect(function()
+buttons["Tool"].MouseButton1Click:Connect(function()
     local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if myHRP then
         myHRP.CFrame = CFrame.new(-400, 4, -1815)
