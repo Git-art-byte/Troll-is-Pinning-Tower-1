@@ -36,29 +36,29 @@ Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
 
 -- Button Creation
 local buttons = {}
-local buttonNames = {"Slap", "Kill", "Goto", "LoopSlap", "End", "Tool", "TpTroll"}
+local buttonNames = {"Slap", "Kill", "Goto", "LoopSlap", "End", "???", "TpTroll"}
 local positions = {
-	UDim2.new(0, 10, 0, 85),
-	UDim2.new(0, 135, 0, 85),
-	UDim2.new(0, 260, 0, 85),
-	UDim2.new(0, 10, 0, 135),
-	UDim2.new(0, 135, 0, 135),
-	UDim2.new(0, 260, 0, 135),
-	UDim2.new(0, 135, 0, 185)
+    UDim2.new(0, 10, 0, 85),
+    UDim2.new(0, 135, 0, 85),
+    UDim2.new(0, 260, 0, 85),
+    UDim2.new(0, 10, 0, 135),
+    UDim2.new(0, 135, 0, 135),
+    UDim2.new(0, 260, 0, 135),
+    UDim2.new(0, 135, 0, 185)
 }
 
 for i, name in ipairs(buttonNames) do
-	local btn = Instance.new("TextButton", frame)
-	btn.Name = name
-	btn.Text = name
-	btn.Size = UDim2.new(0, 110, 0, 40)
-	btn.Position = positions[i]
-	btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-	btn.TextColor3 = Color3.new(1, 1, 1)
-	btn.TextScaled = true
-	btn.Font = Enum.Font.GothamBold
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-	buttons[name] = btn
+    local btn = Instance.new("TextButton", frame)
+    btn.Name = name
+    btn.Text = name
+    btn.Size = UDim2.new(0, 110, 0, 40)
+    btn.Position = positions[i]
+    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.TextScaled = true
+    btn.Font = Enum.Font.GothamBold
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    buttons[name] = btn
 end
 
 -- CUSTOMIZATION GUI (styled same as main GUI)
@@ -134,238 +134,234 @@ local currentAction = nil
 
 -- Helper Functions
 local function getTargets(input)
-	local all = Players:GetPlayers()
-	local targets = {}
-	input = input:lower()
+    local all = Players:GetPlayers()
+    local targets = {}
+    input = input:lower()
 
-	if input == "all" then
-		for _, p in ipairs(all) do
-			if p ~= LocalPlayer then
-				table.insert(targets, p)
-			end
+    if input == "all" then
+        for _, p in ipairs(all) do
+            if p ~= LocalPlayer then
+                table.insert(targets, p)
+            end
+        end
+    elseif input == "random" then
+        local candidates = {}
+        for _, p in ipairs(all) do
+            if p ~= LocalPlayer then
+                table.insert(candidates, p)
+            end
+        end
+        if #candidates > 0 then
+            table.insert(targets, candidates[math.random(1, #candidates)])
+        end
+    else
+        for _, p in ipairs(all) do
+            if p ~= LocalPlayer then
+                local display = p.DisplayName:lower()
+                local username = p.Name:lower()
+                if display:sub(1, #input) == input or username:sub(1, #input) == input then
+                    table.insert(targets, p)
+                    break
+                end
+            end
+        end
+    end
 
-	elseif input == "random" then
-		local candidates = {}
-		for _, p in ipairs(all) do
-			if p ~= LocalPlayer then
-				table.insert(candidates, p)
-			end
-		end
-		if #candidates > 0 then
-			table.insert(targets, candidates[math.random(1, #candidates)])
-		end
-
-	else
-		for _, p in ipairs(all) do
-			if p ~= LocalPlayer then
-				local display = p.DisplayName:lower()
-				local username = p.Name:lower()
-				if display:sub(1, #input) == input or username:sub(1, #input) == input then
-					table.insert(targets, p)
-					break
-				end
-			end
-		end
-	end
-
-	return targets
+    return targets
 end
 
 local function equipTool()
-	local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("SecretSlap")
-	if tool then
-		return tool
-	end
-	tool = LocalPlayer.Backpack:FindFirstChild("SecretSlap")
-	if tool then
-		tool.Parent = LocalPlayer.Character
-		return tool
-	end
-	return nil
+    local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("SecretSlap")
+    if tool then
+        return tool
+    end
+    tool = LocalPlayer.Backpack:FindFirstChild("SecretSlap")
+    if tool then
+        tool.Parent = LocalPlayer.Character
+        return tool
+    end
+    return nil
 end
 
 local function slapTarget(target, force)
-	local tool = equipTool()
-	if not tool or not target.Character then return end
+    local tool = equipTool()
+    if not tool or not target.Character then return end
 
-	local args = {
-		"slash",
-		target.Character,
-		Vector3.new(force, 0, force)
-	}
+    local args = {
+        "slash",
+        target.Character,
+        Vector3.new(force, 0, force)
+    }
 
-	pcall(function()
-		tool:WaitForChild("Event"):FireServer(unpack(args))
-	end)
+    pcall(function()
+        tool:WaitForChild("Event"):FireServer(unpack(args))
+    end)
 end
 
 local function showMainHideCustom()
-	frame.Visible = true
-	customGui.Visible = false
-	inputBox.Text = ""
-	delayBox.Text = ""
-	delayLabel.Visible = false
-	delayBox.Visible = false
+    frame.Visible = true
+    customGui.Visible = false
+    inputBox.Text = ""
+    delayBox.Text = ""
+    delayLabel.Visible = false
+    delayBox.Visible = false
 end
 
 local function showCustomHideMain(action)
-	currentAction = action
-	frame.Visible = false
-	customGui.Visible = true
+    currentAction = action
+    frame.Visible = false
+    customGui.Visible = true
 
-	if action == "Slap" then
-		customTitle.Text = "Slap Customization"
-		inputLabel.Text = "Force (default 80)"
-		inputBox.PlaceholderText = "Enter slap force"
-		delayLabel.Visible = false
-		delayBox.Visible = false
-
-	elseif action == "LoopSlap" then
-		customTitle.Text = "LoopSlap Customization"
-		inputLabel.Text = "Force (default 20)"
-		inputBox.PlaceholderText = "Enter slap force"
-		delayLabel.Text = "Delay (seconds, default 0)"
-		delayLabel.Visible = true
-		delayBox.Visible = true
-		delayBox.PlaceholderText = "Enter delay between slaps"
-	end
+    if action == "Slap" then
+        customTitle.Text = "Slap Customization"
+        inputLabel.Text = "Force (default 80)"
+        inputBox.PlaceholderText = "Enter slap force"
+        delayLabel.Visible = false
+        delayBox.Visible = false
+    elseif action == "LoopSlap" then
+        customTitle.Text = "LoopSlap Customization"
+        inputLabel.Text = "Force (default 20)"
+        inputBox.PlaceholderText = "Enter slap force"
+        delayLabel.Text = "Delay (seconds, default 0)"
+        delayLabel.Visible = true
+        delayBox.Visible = true
+        delayBox.PlaceholderText = "Enter delay between slaps"
+    end
 end
 
 -- BUTTONS
 
 buttons["Slap"].MouseButton1Click:Connect(function()
-	if #getTargets(box.Text) == 0 then
-		warn("No valid targets found")
-		return
-	end
-	showCustomHideMain("Slap")
+    if #getTargets(box.Text) == 0 then
+        warn("No valid targets found")
+        return
+    end
+    showCustomHideMain("Slap")
 end)
 
 buttons["Kill"].MouseButton1Click:Connect(function()
-	local targets = getTargets(box.Text)
-	for _, target in ipairs(targets) do
-		slapTarget(target, math.huge)
-	end
+    local targets = getTargets(box.Text)
+    for _, target in ipairs(targets) do
+        slapTarget(target, math.huge)
+    end
 end)
 
 buttons["Goto"].MouseButton1Click:Connect(function()
-	local targets = getTargets(box.Text)
-	if #targets > 0 then
-		local hrp = targets[1].Character and targets[1].Character:FindFirstChild("HumanoidRootPart")
-		if hrp then
-			local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-			if myHRP then
-				myHRP.CFrame = hrp.CFrame + Vector3.new(0, 3, 0)
-			end
-		end
-	end
+    local targets = getTargets(box.Text)
+    if #targets > 0 then
+        local hrp = targets[1].Character and targets[1].Character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if myHRP then
+                myHRP.CFrame = hrp.CFrame + Vector3.new(0, 3, 0)
+            end
+        end
+    end
 end)
 
 buttons["LoopSlap"].MouseButton1Click:Connect(function()
-	if #getTargets(box.Text) == 0 then
-		warn("No valid targets found")
-		return
-	end
-	showCustomHideMain("LoopSlap")
+    if #getTargets(box.Text) == 0 then
+        warn("No valid targets found")
+        return
+    end
+    showCustomHideMain("LoopSlap")
 end)
 
 buttons["End"].MouseButton1Click:Connect(function()
-	local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if myHRP then
-		myHRP.CFrame = CFrame.new(-220, 530, -1844)
-	end
+    local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHRP then
+        myHRP.CFrame = CFrame.new(-220, 530, -1844)
+    end
 end)
 
-buttons["Tool"].MouseButton1Click:Connect(function()
-	local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if myHRP then
-		myHRP.CFrame = CFrame.new(-400, 4, -1815)
-	end
+buttons["???"].MouseButton1Click:Connect(function()
+    local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHRP then
+        myHRP.CFrame = CFrame.new(-400, 4, -1815)
+    end
 
-	wait(0.3) -- short wait to let teleport finish
+    wait(0.3) -- short wait to let teleport finish
 
-	local promptPart = workspace:FindFirstChild("MainGame") and
-		workspace.MainGame:FindFirstChild("SecretDoor") and
-		workspace.MainGame.SecretDoor:FindFirstChild("OpSlap") and
-		workspace.MainGame.SecretDoor.OpSlap:FindFirstChild("ProximityPrompPart") and
-		workspace.MainGame.SecretDoor.OpSlap.ProximityPrompPart:FindFirstChild("???")
+    local promptPart = workspace:FindFirstChild("MainGame") and
+        workspace.MainGame:FindFirstChild("SecretDoor") and
+        workspace.MainGame.SecretDoor:FindFirstChild("OpSlap") and
+        workspace.MainGame.SecretDoor.OpSlap:FindFirstChild("ProximityPrompPart") and
+        workspace.MainGame.SecretDoor.OpSlap.ProximityPrompPart:FindFirstChild("???")
 
-	if promptPart and promptPart:IsA("ProximityPrompt") then
-		fireproximityprompt(promptPart)
-	else
-		warn("Prompt '???' not found or invalid")
-	end
+    if promptPart and promptPart:IsA("ProximityPrompt") then
+        fireproximityprompt(promptPart)
+    else
+        warn("Prompt '???' not found or invalid")
+    end
 end)
 
 buttons["TpTroll"].MouseButton1Click:Connect(function()
-	local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if myHRP then
-		myHRP.CFrame = CFrame.new(-384, 154, -1872)
-	end
+    local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHRP then
+        myHRP.CFrame = CFrame.new(-384, 154, -1872)
+    end
 end)
 
 -- Confirm Button Logic
 confirmBtn.MouseButton1Click:Connect(function()
-	local targets = getTargets(box.Text)
-	if #targets == 0 then
-		warn("No valid targets found")
-		showMainHideCustom()
-		return
-	end
+    local targets = getTargets(box.Text)
+    if #targets == 0 then
+        warn("No valid targets found")
+        showMainHideCustom()
+        return
+    end
 
-	if currentAction == "Slap" then
-		local force = tonumber(inputBox.Text)
-		if not force or force <= 0 then force = 80 end
+    if currentAction == "Slap" then
+        local force = tonumber(inputBox.Text)
+        if not force or force <= 0 then force = 80 end
 
-		for _, target in ipairs(targets) do
-			slapTarget(target, force)
-		end
+        for _, target in ipairs(targets) do
+            slapTarget(target, force)
+        end
 
-		showMainHideCustom()
+        showMainHideCustom()
+    elseif currentAction == "LoopSlap" then
+        local force = tonumber(inputBox.Text)
+        if not force or force <= 0 then force = 20 end
 
-	elseif currentAction == "LoopSlap" then
-		local force = tonumber(inputBox.Text)
-		if not force or force <= 0 then force = 20 end
+        local delay = tonumber(delayBox.Text)
+        if not delay or delay < 0 then delay = 0 end
 
-		local delay = tonumber(delayBox.Text)
-		if not delay or delay < 0 then delay = 0 end
+        looping = true
+        buttons["LoopSlap"].Text = "LoopSlap: ON"
 
-		looping = true
-		buttons["LoopSlap"].Text = "LoopSlap: ON"
+        if loopConnection then
+            loopConnection:Disconnect()
+            loopConnection = nil
+        end
 
-		if loopConnection then
-			loopConnection:Disconnect()
-			loopConnection = nil
-		end
+        loopConnection = RunService.Heartbeat:Connect(function()
+            if not looping then return end
+            for _, target in ipairs(targets) do
+                slapTarget(target, force)
+            end
+            wait(delay)
+        end)
 
-		loopConnection = RunService.Heartbeat:Connect(function()
-			if not looping then return end
-			for _, target in ipairs(targets) do
-				slapTarget(target, force)
-			end
-			wait(delay)
-		end)
-
-		showMainHideCustom()
-	end
+        showMainHideCustom()
+    end
 end)
 
 -- End LoopSlap when clicking End
 buttons["End"].MouseButton1Click:Connect(function()
-	if looping then
-		looping = false
-		buttons["LoopSlap"].Text = "LoopSlap"
-		if loopConnection then
-			loopConnection:Disconnect()
-			loopConnection = nil
-		end
-	end
-	local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-	if myHRP then
-		myHRP.CFrame = CFrame.new(-220, 530, -1844)
-	end
+    if looping then
+        looping = false
+        buttons["LoopSlap"].Text = "LoopSlap"
+        if loopConnection then
+            loopConnection:Disconnect()
+            loopConnection = nil
+        end
+    end
+    local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if myHRP then
+        myHRP.CFrame = CFrame.new(-220, 530, -1844)
+    end
 end)
 
 -- Helper to reset GUI on startup
 showMainHideCustom()
-  
