@@ -36,7 +36,7 @@ Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
 
 -- Button Creation
 local buttons = {}
-local buttonNames = {"Slap", "Kill", "Goto", "LoopSlap", "End", "???", "TpTroll"}
+local buttonNames = {"Slap", "Kill", "Goto", "LoopSlap", "End", "Tool", "TpTroll"}
 local positions = {
     UDim2.new(0, 10, 0, 85),
     UDim2.new(0, 135, 0, 85),
@@ -274,7 +274,7 @@ buttons["End"].MouseButton1Click:Connect(function()
     end
 end)
 
-buttons["???"].MouseButton1Click:Connect(function()
+buttons["Tool"].MouseButton1Click:Connect(function()
     local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if myHRP then
         myHRP.CFrame = CFrame.new(-400, 4, -1815)
