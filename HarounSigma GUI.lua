@@ -1,24 +1,24 @@
--- FULL Tablet GUI with Slap, Kill, Goto, LoopSlap, End, ???, TpTroll, Customization GUI
-
+-- Enhanced Tablet GUI with UnLoopSlap and improved customization
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
 
--- GUI SETUP
+-- GUI SETUP (Tablet Optimized)
 local gui = Instance.new("ScreenGui", game.CoreGui)
-gui.Name = "SecretSlapGUI"
+gui.Name = "SecretSlapGUI_Tablet"
 
+-- Main Frame (larger for tablets)
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 380, 0, 260)
-frame.Position = UDim2.new(0.5, -190, 0.5, -130)
+frame.Size = UDim2.new(0, 450, 0, 350)
+frame.Position = UDim2.new(0.5, -225, 0.5, -175)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.Active = true
 frame.Draggable = true
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 30)
-title.Text = "🔥 SecretSlap GUI"
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Text = "🔥 SecretSlap Tablet GUI"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.BackgroundTransparency = 1
 title.TextScaled = true
@@ -26,80 +26,81 @@ title.Font = Enum.Font.GothamBold
 
 local box = Instance.new("TextBox", frame)
 box.PlaceholderText = "Enter name, 'all', or 'random'"
-box.Size = UDim2.new(1, -20, 0, 40)
-box.Position = UDim2.new(0, 10, 0, 35)
+box.Size = UDim2.new(1, -30, 0, 50)
+box.Position = UDim2.new(0, 15, 0, 45)
 box.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 box.TextColor3 = Color3.new(1, 1, 1)
 box.TextScaled = true
 box.Font = Enum.Font.Gotham
-Instance.new("UICorner", box).CornerRadius = UDim.new(0, 6)
+Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
 
 -- Button Creation
 local buttons = {}
-local buttonNames = {"Slap", "Kill", "Goto", "LoopSlap", "End", "Tool", "TpTroll"}
+local buttonNames = {"Slap", "Kill", "Goto", "LoopSlap", "UnLoopSlap", "End", "???", "TpTroll"}
 local positions = {
-    UDim2.new(0, 10, 0, 85),
-    UDim2.new(0, 135, 0, 85),
-    UDim2.new(0, 260, 0, 85),
-    UDim2.new(0, 10, 0, 135),
-    UDim2.new(0, 135, 0, 135),
-    UDim2.new(0, 260, 0, 135),
-    UDim2.new(0, 135, 0, 185)
+    UDim2.new(0, 15, 0, 105),
+    UDim2.new(0, 165, 0, 105),
+    UDim2.new(0, 315, 0, 105),
+    UDim2.new(0, 15, 0, 165),
+    UDim2.new(0, 165, 0, 165),
+    UDim2.new(0, 315, 0, 165),
+    UDim2.new(0, 15, 0, 225),
+    UDim2.new(0, 165, 0, 225)
 }
 
 for i, name in ipairs(buttonNames) do
     local btn = Instance.new("TextButton", frame)
     btn.Name = name
     btn.Text = name
-    btn.Size = UDim2.new(0, 110, 0, 40)
+    btn.Size = UDim2.new(0, 120, 0, 50)
     btn.Position = positions[i]
     btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     btn.TextColor3 = Color3.new(1, 1, 1)
     btn.TextScaled = true
     btn.Font = Enum.Font.GothamBold
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
     buttons[name] = btn
 end
 
--- CUSTOMIZATION GUI (styled same as main GUI)
+-- CUSTOMIZATION GUI
 local customGui = Instance.new("Frame", gui)
-customGui.Size = UDim2.new(0, 380, 0, 180)
-customGui.Position = UDim2.new(0.5, -190, 0.5, -90)
+customGui.Size = UDim2.new(0, 450, 0, 250)
+customGui.Position = UDim2.new(0.5, -225, 0.5, -125)
 customGui.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 customGui.Visible = false
 customGui.Active = true
 customGui.Draggable = true
-Instance.new("UICorner", customGui).CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", customGui).CornerRadius = UDim.new(0, 12)
 
 local customTitle = Instance.new("TextLabel", customGui)
-customTitle.Size = UDim2.new(1, 0, 0, 30)
-customTitle.Position = UDim2.new(0, 0, 0, 5)
+customTitle.Size = UDim2.new(1, 0, 0, 40)
+customTitle.Position = UDim2.new(0, 0, 0, 10)
 customTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 customTitle.BackgroundTransparency = 1
 customTitle.TextScaled = true
 customTitle.Font = Enum.Font.GothamBold
 
 local inputLabel = Instance.new("TextLabel", customGui)
-inputLabel.Size = UDim2.new(1, -20, 0, 25)
-inputLabel.Position = UDim2.new(0, 10, 0, 45)
+inputLabel.Size = UDim2.new(1, -30, 0, 30)
+inputLabel.Position = UDim2.new(0, 15, 0, 60)
 inputLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 inputLabel.BackgroundTransparency = 1
 inputLabel.TextScaled = true
 inputLabel.Font = Enum.Font.GothamBold
 
 local inputBox = Instance.new("TextBox", customGui)
-inputBox.Size = UDim2.new(1, -20, 0, 40)
-inputBox.Position = UDim2.new(0, 10, 0, 75)
+inputBox.Size = UDim2.new(1, -30, 0, 50)
+inputBox.Position = UDim2.new(0, 15, 0, 95)
 inputBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 inputBox.TextScaled = true
 inputBox.Font = Enum.Font.Gotham
-Instance.new("UICorner", inputBox).CornerRadius = UDim.new(0, 6)
+Instance.new("UICorner", inputBox).CornerRadius = UDim.new(0, 8)
 inputBox.ClearTextOnFocus = false
 
 local delayLabel = Instance.new("TextLabel", customGui)
-delayLabel.Size = UDim2.new(1, -20, 0, 25)
-delayLabel.Position = UDim2.new(0, 10, 0, 120)
+delayLabel.Size = UDim2.new(1, -30, 0, 30)
+delayLabel.Position = UDim2.new(0, 15, 0, 155)
 delayLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 delayLabel.BackgroundTransparency = 1
 delayLabel.TextScaled = true
@@ -107,25 +108,25 @@ delayLabel.Font = Enum.Font.GothamBold
 delayLabel.Visible = false
 
 local delayBox = Instance.new("TextBox", customGui)
-delayBox.Size = UDim2.new(1, -20, 0, 40)
-delayBox.Position = UDim2.new(0, 10, 0, 150)
+delayBox.Size = UDim2.new(1, -30, 0, 50)
+delayBox.Position = UDim2.new(0, 15, 0, 190)
 delayBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 delayBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 delayBox.TextScaled = true
 delayBox.Font = Enum.Font.Gotham
-Instance.new("UICorner", delayBox).CornerRadius = UDim.new(0, 6)
+Instance.new("UICorner", delayBox).CornerRadius = UDim.new(0, 8)
 delayBox.ClearTextOnFocus = false
 delayBox.Visible = false
 
 local confirmBtn = Instance.new("TextButton", customGui)
-confirmBtn.Size = UDim2.new(0, 110, 0, 40)
-confirmBtn.Position = UDim2.new(0.5, -55, 1, -50)
+confirmBtn.Size = UDim2.new(0, 150, 0, 60)
+confirmBtn.Position = UDim2.new(0.5, -75, 1, -70)
 confirmBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 confirmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-confirmBtn.Text = "Confirm"
+confirmBtn.Text = "CONFIRM"
 confirmBtn.TextScaled = true
 confirmBtn.Font = Enum.Font.GothamBold
-Instance.new("UICorner", confirmBtn).CornerRadius = UDim.new(0, 6)
+Instance.new("UICorner", confirmBtn).CornerRadius = UDim.new(0, 8)
 
 -- Variables
 local looping = false
@@ -213,24 +214,23 @@ local function showCustomHideMain(action)
     customGui.Visible = true
 
     if action == "Slap" then
-        customTitle.Text = "Slap Customization"
-        inputLabel.Text = "Force (default 80)"
+        customTitle.Text = "SLAP CUSTOMIZATION"
+        inputLabel.Text = "Force (default: 80)"
         inputBox.PlaceholderText = "Enter slap force"
         delayLabel.Visible = false
         delayBox.Visible = false
     elseif action == "LoopSlap" then
-        customTitle.Text = "LoopSlap Customization"
-        inputLabel.Text = "Force (default 20)"
+        customTitle.Text = "LOOPSLAP CUSTOMIZATION"
+        inputLabel.Text = "Force (default: 20)"
         inputBox.PlaceholderText = "Enter slap force"
-        delayLabel.Text = "Delay (seconds, default 0)"
+        delayLabel.Text = "Delay between slaps (seconds)"
         delayLabel.Visible = true
         delayBox.Visible = true
-        delayBox.PlaceholderText = "Enter delay between slaps"
+        delayBox.PlaceholderText = "Enter delay (default: 0.1)"
     end
 end
 
--- BUTTONS
-
+-- BUTTON FUNCTIONS
 buttons["Slap"].MouseButton1Click:Connect(function()
     if #getTargets(box.Text) == 0 then
         warn("No valid targets found")
@@ -267,20 +267,39 @@ buttons["LoopSlap"].MouseButton1Click:Connect(function()
     showCustomHideMain("LoopSlap")
 end)
 
+buttons["UnLoopSlap"].MouseButton1Click:Connect(function()
+    if looping then
+        looping = false
+        buttons["LoopSlap"].Text = "LoopSlap"
+        if loopConnection then
+            loopConnection:Disconnect()
+            loopConnection = nil
+        end
+    end
+end)
+
 buttons["End"].MouseButton1Click:Connect(function()
+    if looping then
+        looping = false
+        buttons["LoopSlap"].Text = "LoopSlap"
+        if loopConnection then
+            loopConnection:Disconnect()
+            loopConnection = nil
+        end
+    end
     local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if myHRP then
         myHRP.CFrame = CFrame.new(-220, 530, -1844)
     end
 end)
 
-buttons["Tool"].MouseButton1Click:Connect(function()
+buttons["???"].MouseButton1Click:Connect(function()
     local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if myHRP then
         myHRP.CFrame = CFrame.new(-400, 4, -1815)
     end
 
-    wait(0.3) -- short wait to let teleport finish
+    task.wait(0.3)
 
     local promptPart = workspace:FindFirstChild("MainGame") and
         workspace.MainGame:FindFirstChild("SecretDoor") and
@@ -312,56 +331,32 @@ confirmBtn.MouseButton1Click:Connect(function()
     end
 
     if currentAction == "Slap" then
-        local force = tonumber(inputBox.Text)
-        if not force or force <= 0 then force = 80 end
-
+        local force = tonumber(inputBox.Text) or 80
         for _, target in ipairs(targets) do
             slapTarget(target, force)
         end
-
-        showMainHideCustom()
     elseif currentAction == "LoopSlap" then
-        local force = tonumber(inputBox.Text)
-        if not force or force <= 0 then force = 20 end
-
-        local delay = tonumber(delayBox.Text)
-        if not delay or delay < 0 then delay = 0 end
-
-        looping = true
-        buttons["LoopSlap"].Text = "LoopSlap: ON"
-
+        local force = tonumber(inputBox.Text) or 20
+        local delay = tonumber(delayBox.Text) or 0.1
+        
         if loopConnection then
             loopConnection:Disconnect()
-            loopConnection = nil
         end
-
+        
+        looping = true
+        buttons["LoopSlap"].Text = "LOOPING"
+        
         loopConnection = RunService.Heartbeat:Connect(function()
             if not looping then return end
             for _, target in ipairs(targets) do
                 slapTarget(target, force)
             end
-            wait(delay)
+            task.wait(delay)
         end)
-
-        showMainHideCustom()
     end
+    
+    showMainHideCustom()
 end)
 
--- End LoopSlap when clicking End
-buttons["End"].MouseButton1Click:Connect(function()
-    if looping then
-        looping = false
-        buttons["LoopSlap"].Text = "LoopSlap"
-        if loopConnection then
-            loopConnection:Disconnect()
-            loopConnection = nil
-        end
-    end
-    local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if myHRP then
-        myHRP.CFrame = CFrame.new(-220, 530, -1844)
-    end
-end)
-
--- Helper to reset GUI on startup
+-- Initialize GUI
 showMainHideCustom()
