@@ -1,58 +1,80 @@
--- Enhanced Tablet GUI with UnLoopSlap and improved customization
+-- Enhanced Tablet GUI with all requested features
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 -- GUI SETUP (Tablet Optimized)
 local gui = Instance.new("ScreenGui", game.CoreGui)
 gui.Name = "SecretSlapGUI_Tablet"
+gui.Enabled = true
 
--- Main Frame (larger for tablets)
+-- Main Frame (better organized for tablets)
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 450, 0, 350)
-frame.Position = UDim2.new(0.5, -225, 0.5, -175)
+frame.Size = UDim2.new(0, 500, 0, 400)  -- Larger size
+frame.Position = UDim2.new(0.5, -250, 0.5, -200)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 40)
+-- Title with close button
+local titleBar = Instance.new("Frame", frame)
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.BackgroundTransparency = 1
+
+local title = Instance.new("TextLabel", titleBar)
+title.Size = UDim2.new(0.8, 0, 1, 0)
 title.Text = "🔥 SecretSlap Tablet GUI"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.BackgroundTransparency = 1
 title.TextScaled = true
 title.Font = Enum.Font.GothamBold
 
+local closeBtn = Instance.new("TextButton", titleBar)
+closeBtn.Size = UDim2.new(0.2, 0, 1, 0)
+closeBtn.Position = UDim2.new(0.8, 0, 0, 0)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
+closeBtn.BackgroundTransparency = 1
+closeBtn.TextScaled = true
+closeBtn.Font = Enum.Font.GothamBold
+
+-- Input Box (larger)
 local box = Instance.new("TextBox", frame)
 box.PlaceholderText = "Enter name, 'all', or 'random'"
-box.Size = UDim2.new(1, -30, 0, 50)
-box.Position = UDim2.new(0, 15, 0, 45)
+box.Size = UDim2.new(1, -40, 0, 50)
+box.Position = UDim2.new(0, 20, 0, 50)
 box.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 box.TextColor3 = Color3.new(1, 1, 1)
 box.TextScaled = true
 box.Font = Enum.Font.Gotham
 Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
 
--- Button Creation
+-- Button Creation (better organized grid)
 local buttons = {}
-local buttonNames = {"Slap", "Kill", "Goto", "LoopSlap", "UnLoopSlap", "End", "???", "TpTroll"}
+local buttonNames = {
+    "Slap", "Kill", "Goto", 
+    "LoopSlap", "UnLoopSlap", "End", 
+    "???", "TpTroll"
+}
 local positions = {
-    UDim2.new(0, 15, 0, 105),
-    UDim2.new(0, 165, 0, 105),
-    UDim2.new(0, 315, 0, 105),
-    UDim2.new(0, 15, 0, 165),
-    UDim2.new(0, 165, 0, 165),
-    UDim2.new(0, 315, 0, 165),
-    UDim2.new(0, 15, 0, 225),
-    UDim2.new(0, 165, 0, 225)
+    UDim2.new(0, 20, 0, 110),    -- Row 1
+    UDim2.new(0, 180, 0, 110),
+    UDim2.new(0, 340, 0, 110),
+    UDim2.new(0, 20, 0, 180),    -- Row 2
+    UDim2.new(0, 180, 0, 180),
+    UDim2.new(0, 340, 0, 180),
+    UDim2.new(0, 20, 0, 250),    -- Row 3
+    UDim2.new(0, 180, 0, 250)
 }
 
 for i, name in ipairs(buttonNames) do
     local btn = Instance.new("TextButton", frame)
     btn.Name = name
     btn.Text = name
-    btn.Size = UDim2.new(0, 120, 0, 50)
+    btn.Size = UDim2.new(0, 150, 0, 60)  -- Larger buttons
     btn.Position = positions[i]
     btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     btn.TextColor3 = Color3.new(1, 1, 1)
@@ -62,35 +84,49 @@ for i, name in ipairs(buttonNames) do
     buttons[name] = btn
 end
 
--- CUSTOMIZATION GUI
+-- CUSTOMIZATION GUI (Improved layout)
 local customGui = Instance.new("Frame", gui)
-customGui.Size = UDim2.new(0, 450, 0, 250)
-customGui.Position = UDim2.new(0.5, -225, 0.5, -125)
+customGui.Size = UDim2.new(0, 500, 0, 300)
+customGui.Position = UDim2.new(0.5, -250, 0.5, -150)
 customGui.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 customGui.Visible = false
 customGui.Active = true
 customGui.Draggable = true
 Instance.new("UICorner", customGui).CornerRadius = UDim.new(0, 12)
 
-local customTitle = Instance.new("TextLabel", customGui)
-customTitle.Size = UDim2.new(1, 0, 0, 40)
-customTitle.Position = UDim2.new(0, 0, 0, 10)
+-- Custom GUI Title with close button
+local customTitleBar = Instance.new("Frame", customGui)
+customTitleBar.Size = UDim2.new(1, 0, 0, 40)
+customTitleBar.BackgroundTransparency = 1
+
+local customTitle = Instance.new("TextLabel", customTitleBar)
+customTitle.Size = UDim2.new(0.8, 0, 1, 0)
+customTitle.Text = "CUSTOMIZATION"
 customTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 customTitle.BackgroundTransparency = 1
 customTitle.TextScaled = true
 customTitle.Font = Enum.Font.GothamBold
 
+local customCloseBtn = Instance.new("TextButton", customTitleBar)
+customCloseBtn.Size = UDim2.new(0.2, 0, 1, 0)
+customCloseBtn.Position = UDim2.new(0.8, 0, 0, 0)
+customCloseBtn.Text = "X"
+customCloseBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
+customCloseBtn.BackgroundTransparency = 1
+customCloseBtn.TextScaled = true
+customCloseBtn.Font = Enum.Font.GothamBold
+
 local inputLabel = Instance.new("TextLabel", customGui)
-inputLabel.Size = UDim2.new(1, -30, 0, 30)
-inputLabel.Position = UDim2.new(0, 15, 0, 60)
+inputLabel.Size = UDim2.new(1, -40, 0, 40)
+inputLabel.Position = UDim2.new(0, 20, 0, 50)
 inputLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 inputLabel.BackgroundTransparency = 1
 inputLabel.TextScaled = true
 inputLabel.Font = Enum.Font.GothamBold
 
 local inputBox = Instance.new("TextBox", customGui)
-inputBox.Size = UDim2.new(1, -30, 0, 50)
-inputBox.Position = UDim2.new(0, 15, 0, 95)
+inputBox.Size = UDim2.new(1, -40, 0, 60)
+inputBox.Position = UDim2.new(0, 20, 0, 100)
 inputBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 inputBox.TextScaled = true
@@ -99,8 +135,8 @@ Instance.new("UICorner", inputBox).CornerRadius = UDim.new(0, 8)
 inputBox.ClearTextOnFocus = false
 
 local delayLabel = Instance.new("TextLabel", customGui)
-delayLabel.Size = UDim2.new(1, -30, 0, 30)
-delayLabel.Position = UDim2.new(0, 15, 0, 155)
+delayLabel.Size = UDim2.new(1, -40, 0, 40)
+delayLabel.Position = UDim2.new(0, 20, 0, 170)
 delayLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 delayLabel.BackgroundTransparency = 1
 delayLabel.TextScaled = true
@@ -108,8 +144,8 @@ delayLabel.Font = Enum.Font.GothamBold
 delayLabel.Visible = false
 
 local delayBox = Instance.new("TextBox", customGui)
-delayBox.Size = UDim2.new(1, -30, 0, 50)
-delayBox.Position = UDim2.new(0, 15, 0, 190)
+delayBox.Size = UDim2.new(1, -40, 0, 60)
+delayBox.Position = UDim2.new(0, 20, 0, 220)
 delayBox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 delayBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 delayBox.TextScaled = true
@@ -119,8 +155,8 @@ delayBox.ClearTextOnFocus = false
 delayBox.Visible = false
 
 local confirmBtn = Instance.new("TextButton", customGui)
-confirmBtn.Size = UDim2.new(0, 150, 0, 60)
-confirmBtn.Position = UDim2.new(0.5, -75, 1, -70)
+confirmBtn.Size = UDim2.new(0.4, 0, 0, 70)
+confirmBtn.Position = UDim2.new(0.3, 0, 1, -80)
 confirmBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 confirmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 confirmBtn.Text = "CONFIRM"
@@ -132,6 +168,7 @@ Instance.new("UICorner", confirmBtn).CornerRadius = UDim.new(0, 8)
 local looping = false
 local loopConnection = nil
 local currentAction = nil
+local chatHook = nil
 
 -- Helper Functions
 local function getTargets(input)
@@ -160,9 +197,8 @@ local function getTargets(input)
             if p ~= LocalPlayer then
                 local display = p.DisplayName:lower()
                 local username = p.Name:lower()
-                if display:sub(1, #input) == input or username:sub(1, #input) == input then
+                if display:find(input, 1, true) or username:find(input, 1, true) then
                     table.insert(targets, p)
-                    break
                 end
             end
         end
@@ -171,11 +207,17 @@ local function getTargets(input)
     return targets
 end
 
+local function hasSlapTool()
+    return LocalPlayer.Backpack:FindFirstChild("SecretSlap") or 
+           (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("SecretSlap"))
+end
+
 local function equipTool()
+    if not hasSlapTool() then return nil end
+    
     local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("SecretSlap")
-    if tool then
-        return tool
-    end
+    if tool then return tool end
+    
     tool = LocalPlayer.Backpack:FindFirstChild("SecretSlap")
     if tool then
         tool.Parent = LocalPlayer.Character
@@ -185,18 +227,31 @@ local function equipTool()
 end
 
 local function slapTarget(target, force)
-    local tool = equipTool()
-    if not tool or not target.Character then return end
-
+    if not target.Character then return end
+    
     local args = {
         "slash",
         target.Character,
         Vector3.new(force, 0, force)
     }
 
-    pcall(function()
-        tool:WaitForChild("Event"):FireServer(unpack(args))
-    end)
+    -- Only require tool for slap/kill actions
+    if currentAction == "Slap" or currentAction == "Kill" or currentAction == "LoopSlap" then
+        local tool = equipTool()
+        if not tool then 
+            warn("SecretSlap tool not found in backpack!")
+            return 
+        end
+        
+        pcall(function()
+            tool:WaitForChild("Event"):FireServer(unpack(args))
+        end)
+    else
+        -- For other actions, just fire the event directly if possible
+        pcall(function()
+            ReplicatedStorage:FindFirstChild("SlapEvent"):FireServer(unpack(args))
+        end)
+    end
 end
 
 local function showMainHideCustom()
@@ -227,6 +282,18 @@ local function showCustomHideMain(action)
         delayLabel.Visible = true
         delayBox.Visible = true
         delayBox.PlaceholderText = "Enter delay (default: 0.1)"
+    end
+end
+
+local function toggleGUI()
+    gui.Enabled = not gui.Enabled
+end
+
+-- Chat command handler
+local function onChatMessage(message, recipient)
+    if message:lower() == "/panel" then
+        toggleGUI()
+        return false
     end
 end
 
@@ -321,6 +388,15 @@ buttons["TpTroll"].MouseButton1Click:Connect(function()
     end
 end)
 
+-- Close buttons
+closeBtn.MouseButton1Click:Connect(function()
+    gui.Enabled = false
+end)
+
+customCloseBtn.MouseButton1Click:Connect(function()
+    showMainHideCustom()
+end)
+
 -- Confirm Button Logic
 confirmBtn.MouseButton1Click:Connect(function()
     local targets = getTargets(box.Text)
@@ -357,6 +433,11 @@ confirmBtn.MouseButton1Click:Connect(function()
     
     showMainHideCustom()
 end)
+
+-- Chat command setup
+if not chatHook and Players.LocalPlayer then
+    chatHook = Players.LocalPlayer.Chatted:Connect(onChatMessage)
+end
 
 -- Initialize GUI
 showMainHideCustom()
