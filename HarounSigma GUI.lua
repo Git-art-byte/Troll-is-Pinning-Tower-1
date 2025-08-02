@@ -34,8 +34,8 @@ gui.Enabled = true
 
 -- Main Frame
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 500, 0, 520)
-frame.Position = UDim2.new(0.5, -250, 0.5, -260)
+frame.Size = UDim2.new(0, 500, 0, 400)
+frame.Position = UDim2.new(0.5, -250, 0.5, -200)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.Active = true
 frame.Draggable = true
@@ -74,25 +74,34 @@ box.TextScaled = true
 box.Font = Enum.Font.Gotham
 Instance.new("UICorner", box).CornerRadius = UDim.new(0, 8)
 
+-- ScrollingFrame for buttons
+local scrollFrame = Instance.new("ScrollingFrame", frame)
+scrollFrame.Size = UDim2.new(1, -40, 1, -120)
+scrollFrame.Position = UDim2.new(0, 20, 0, 110)
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.ScrollBarThickness = 8
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 400)
+scrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+
 -- Button Grid
 local buttons = {}
 local buttonNames = {
     "Slap", "Kill", "Goto", 
     "LoopSlap", "UnLoopSlap", "End", 
-    "SecretSlap", "TpTroll", "View", "UnView",
+    "OpSlap", "TpTroll", "View", "UnView",
     "Fun", "UnFun", "NoCD", "UnNoCD"
 }
 local positions = {
-    UDim2.new(0, 20, 0, 110), UDim2.new(0, 180, 0, 110), UDim2.new(0, 340, 0, 110),
-    UDim2.new(0, 20, 0, 180), UDim2.new(0, 180, 0, 180), UDim2.new(0, 340, 0, 180),
-    UDim2.new(0, 20, 0, 250), UDim2.new(0, 180, 0, 250),
-    UDim2.new(0, 340, 0, 250), UDim2.new(0, 340, 0, 320),
-    UDim2.new(0, 20, 0, 320), UDim2.new(0, 180, 0, 320),
-    UDim2.new(0, 20, 0, 390), UDim2.new(0, 180, 0, 390)
+    UDim2.new(0, 0, 0, 0), UDim2.new(0, 160, 0, 0), UDim2.new(0, 320, 0, 0),
+    UDim2.new(0, 0, 0, 70), UDim2.new(0, 160, 0, 70), UDim2.new(0, 320, 0, 70),
+    UDim2.new(0, 0, 0, 140), UDim2.new(0, 160, 0, 140),
+    UDim2.new(0, 320, 0, 140), UDim2.new(0, 320, 0, 210),
+    UDim2.new(0, 0, 0, 210), UDim2.new(0, 160, 0, 210),
+    UDim2.new(0, 0, 0, 280), UDim2.new(0, 160, 0, 280)
 }
 
 for i, name in ipairs(buttonNames) do
-    local btn = Instance.new("TextButton", frame)
+    local btn = Instance.new("TextButton", scrollFrame)
     btn.Name = name
     btn.Text = name
     btn.Size = UDim2.new(0, 150, 0, 60)
@@ -447,7 +456,7 @@ buttons["End"].MouseButton1Click:Connect(function()
     end
 end)
 
-buttons["SecretSlap"].MouseButton1Click:Connect(function()
+buttons["OpSlap"].MouseButton1Click:Connect(function()
     local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if myHRP then
         myHRP.CFrame = CFrame.new(-400, 4, -1815)
