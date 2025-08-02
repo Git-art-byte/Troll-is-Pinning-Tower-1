@@ -6,6 +6,7 @@ Features:
 - /panel chat command
 - Tablet-optimized UI
 - All previous functionality
+- Fun/UnFun buttons for SecretSlap stats
 ]]
 
 -- Services
@@ -33,8 +34,8 @@ gui.Enabled = true
 
 -- Main Frame
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 500, 0, 450)
-frame.Position = UDim2.new(0.5, -250, 0.5, -225)
+frame.Size = UDim2.new(0, 500, 0, 520)
+frame.Position = UDim2.new(0.5, -250, 0.5, -260)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.Active = true
 frame.Draggable = true
@@ -78,13 +79,16 @@ local buttons = {}
 local buttonNames = {
     "Slap", "Kill", "Goto", 
     "LoopSlap", "UnLoopSlap", "End", 
-    "OpSlap", "TpTroll", "View", "UnView"
+    "SecretSlap", "TpTroll", "View", "UnView",
+    "Fun", "UnFun", "NoCD", "UnNoCD"
 }
 local positions = {
     UDim2.new(0, 20, 0, 110), UDim2.new(0, 180, 0, 110), UDim2.new(0, 340, 0, 110),
     UDim2.new(0, 20, 0, 180), UDim2.new(0, 180, 0, 180), UDim2.new(0, 340, 0, 180),
     UDim2.new(0, 20, 0, 250), UDim2.new(0, 180, 0, 250),
-    UDim2.new(0, 340, 0, 250), UDim2.new(0, 340, 0, 320)
+    UDim2.new(0, 340, 0, 250), UDim2.new(0, 340, 0, 320),
+    UDim2.new(0, 20, 0, 320), UDim2.new(0, 180, 0, 320),
+    UDim2.new(0, 20, 0, 390), UDim2.new(0, 180, 0, 390)
 }
 
 for i, name in ipairs(buttonNames) do
@@ -238,6 +242,38 @@ local function equipTool()
         return tool
     end
     return nil
+end
+
+local function getSlapTool()
+    local tool = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("SecretSlap")
+    if not tool then
+        tool = LocalPlayer.Backpack:FindFirstChild("SecretSlap")
+    end
+    return tool
+end
+
+local function modifyStats(power, speed, flightSpeed)
+    local tool = getSlapTool()
+    if not tool then
+        warn("SecretSlap tool not found!")
+        return
+    end
+    
+    local powerVal = tool:FindFirstChild("Power")
+    local speedVal = tool:FindFirstChild("Speed")
+    local flightSpeedVal = tool:FindFirstChild("FlightSpeed")
+    
+    if powerVal and powerVal:IsA("NumberValue") then
+        powerVal.Value = power
+    end
+    
+    if speedVal and speedVal:IsA("NumberValue") then
+        speedVal.Value = speed
+    end
+    
+    if flightSpeedVal and flightSpeedVal:IsA("NumberValue") then
+        flightSpeedVal.Value = flightSpeed
+    end
 end
 
 local function slapTarget(target, force)
@@ -411,7 +447,7 @@ buttons["End"].MouseButton1Click:Connect(function()
     end
 end)
 
-buttons["OpSlap"].MouseButton1Click:Connect(function()
+buttons["SecretSlap"].MouseButton1Click:Connect(function()
     local myHRP = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if myHRP then
         myHRP.CFrame = CFrame.new(-400, 4, -1815)
@@ -450,6 +486,48 @@ end)
 
 buttons["UnView"].MouseButton1Click:Connect(function()
     stopSpectating()
+end)
+
+-- NoCD/UnNoCD Button Functions
+buttons["NoCD"].MouseButton1Click:Connect(function()
+    local tool = getSlapTool()
+    if not tool then
+        warn("SecretSlap tool not found!")
+        return
+    end
+    
+    local speedVal = tool:FindFirstChild("Speed")
+    if speedVal and speedVal:IsA("NumberValue") then
+        speedVal.Value = 0
+        buttons["NoCD"].Text = "NO CD ON"
+        buttons["NoCD"].BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+    end
+end)
+
+buttons["UnNoCD"].MouseButton1Click:Connect(function()
+    local tool = getSlapTool()
+    if not tool then
+        warn("SecretSlap tool not found!")
+        return
+    end
+    
+    local speedVal = tool:FindFirstChild("Speed")
+    if speedVal and speedVal:IsA("NumberValue") then
+        speedVal.Value = 60
+        buttons["NoCD"].Text = "NoCD"
+        buttons["NoCD"].BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    end
+end)
+buttons["Fun"].MouseButton1Click:Connect(function()
+    modifyStats(math.huge, 0, math.huge) -- Power: inf, Speed: 0, FlightSpeed: inf
+    buttons["Fun"].Text = "FUN ON"
+    buttons["Fun"].BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+end)
+
+buttons["UnFun"].MouseButton1Click:Connect(function()
+    modifyStats(30, 60, 0.45) -- Power: 30, Speed: 60, FlightSpeed: 0.45
+    buttons["Fun"].Text = "Fun"
+    buttons["Fun"].BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 end)
 
 -- Close Buttons
